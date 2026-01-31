@@ -25,7 +25,7 @@ class Sql_connect:
             self.conn = pymysql.connect(
                 host="127.0.0.1", # 主机地址
                 user="root", # 用户名
-                passwd="ai5201314", # 密码
+                passwd="root", # 密码
                 port=3306, # 端口
                 db="user_data" # 数据库名称
             )
@@ -407,7 +407,7 @@ class Sql_connect:
         self.conn = pymysql.connect(
             host="127.0.0.1",  # 主机地址
             user="root",  # 用户名
-            passwd="ai5201314",  # 密码
+            passwd="root",  # 密码
             port=3306,  # 端口
             db="user_data"  # 数据库名称
         )

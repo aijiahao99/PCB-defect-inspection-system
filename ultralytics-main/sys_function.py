@@ -58,7 +58,9 @@ class Login_fun:
             reply = requests.post("http://127.0.0.1:5050/main_window")
             if reply.json().get('status') == '100':
                 # 如果是普通用户则隐藏数据库管理端口
-                object.DETECTION_WIN.funpage.removeTab(2)
+                object.DETECTION_WIN.funpage.setTabEnabled(2,False)
+            else:
+                object.DETECTION_WIN.funpage.setTabEnabled(2,True)
 
             if object.LOGIN_WIN.input_password_line.text() == 'admin' and object.LOGIN_WIN.input_username_line.text() == 'admin':
                 object.DETECTION_WIN.change_password.setEnabled(False)
@@ -96,7 +98,7 @@ class Sys_infor:
         object.SYSTEM_INFOR_WIN.plainTextEdit.setPlainText("*** Current system version number - English v3.0\n"
                                                            f"** The current number of system files - {self.files_count}\n"
                                                            f"** System developer - Jiahao Ai\n"
-                                                           f"** Department - Department of Information Technology and Robotics\n"
+                                                           f"** Department - Information Systems and Technologies\n"
                                                            f"** System architecture - Single-core hybrid architecture\n"
                                                            f"** System version - Development")
     # 获取当前路径
