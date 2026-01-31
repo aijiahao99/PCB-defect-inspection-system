@@ -1210,7 +1210,7 @@ class Ui_system_form(object):
         self.label_46.setText(_translate("system_form", "Final detect result"))
         self.label_40.setText(_translate("system_form", "Product serial number"))
         self.copy_but_1.setText(_translate("system_form", "Copy"))
-        self.toolBox.setItemText(self.toolBox.indexOf(self.page_2), _translate("system_form", "Result information"))
+        self.toolBox.setItemText(self.toolBox.indexOf(self.page_2), _translate("system_form", "Result Information"))
         self.groupBox.setTitle(_translate("system_form", "Evaluation of PCB results and suggestions for improvement"))
         self.back_but.setText(_translate("system_form", "Back"))
         self.reevaluation_but.setText(_translate("system_form", "Re-evaluation"))
