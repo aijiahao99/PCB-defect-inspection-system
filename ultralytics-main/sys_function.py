@@ -122,7 +122,7 @@ class Register_fun:
         # 初始化相关绑定函数和参数
         self.valid_code = None
         self.auto_generate_code()
-        print(self.valid_code)
+        #print(self.valid_code)
         object.REGISTER_WIN.back_but.clicked.connect(self.action_back)
         object.REGISTER_WIN.renew_but.clicked.connect(self.action_refresh)
         object.REGISTER_WIN.confirm_but.clicked.connect(self.action_submit)
