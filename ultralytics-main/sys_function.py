@@ -101,7 +101,7 @@ class Sys_infor:
         object.SYSTEM_INFOR_WIN.plainTextEdit.setPlainText("*** Current system version number - English v4.0\n"
                                                            f"** The current number of system files - {self.files_count}\n"
                                                            f"** System developer - Jiahao Ai\n"
-                                                           f"** Department - Institute of Information Technology and Robotics\n"
+                                                           f"** Department - Information Technology and Robotics\n"
                                                            f"** System architecture - Single-core hybrid architecture\n"
                                                            f"** System version - Development")
     # 获取当前路径
@@ -1041,6 +1041,7 @@ class PROCESS_MEMORY_COUNTERS_EX(ctypes.Structure):
     ]
 PAGE_SIZE = 4096
 
+# 性能监控，从window本地调用
 class Sys_check:
     def __init__(self):
         self.psapi = ctypes.WinDLL('psapi.dll')
@@ -1184,6 +1185,7 @@ class Sys_check:
     def action_start_check(self):
         self.setup_monitor()
 
+# 添加数据到数据库
 class Add_data:
     def __init__(self):
         self.labels = []
@@ -1234,7 +1236,7 @@ class Add_data:
         object.DETECTION_ADD_DATA.close()
         object.DETECTION_QWIDGET.show()
 
-
+# 修改密码功能的逻辑
 class Password_modification:
     def __init__(self):
         object.DETECTION_PASSWORD_CHANGE_WIN.back_last_but.clicked.connect(self.action_back)

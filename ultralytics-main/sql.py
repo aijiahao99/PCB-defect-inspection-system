@@ -184,7 +184,7 @@ class Sql_connect:
         try:
             # 密码长度至少为8个字符，包含至少一个大写字母，包含至少一个小写字母，包含至少一个数字，包含至少一个特殊字符
             # 用户名长度不大于15个字符
-            password_pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!_-]).{8,}$'
+            password_pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!_]).{8,}$'
             # 邮箱规范验证
             address_pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
             # 验证
@@ -648,7 +648,7 @@ class Data_analysis:
         all_data = len(self.data_set)
         for users in self.data_set:
             for _ in range(5,len(users) - 1):
-                if eval((users[_].split('-'))[1]) == current_month and eval((users[_].split('-'))[0]) == current_year:
+                if int((users[_].split('-'))[1]) == current_month and int((users[_].split('-'))[0]) == current_year:
                     active_users += 1
 
         percentage = (active_users / all_data) * 100
@@ -699,9 +699,9 @@ class Data_analysis:
         year_labels = list(calendar.month_name)[1:]
         for users in self.data_set:
             for _ in range(5,len(users) - 1):
-                if eval((users[_].split('-'))[0]) == current_year:
+                if int((users[_].split('-'))[0]) == current_year:
                     for i in range(12):
-                        if eval((users[_].split('-'))[1]) == i + 1:
+                        if int((users[_].split('-'))[1]) == i + 1:
                             year_data[i] += 1
 
 
@@ -728,7 +728,7 @@ class Data_analysis:
         current_year = datetime.now().year
         for pd in self.data_set:
             for _ in range(9, len(pd)):
-                if eval((pd[_].split('-'))[1]) == current_month or eval((pd[_].split('-'))[0]) == current_year:
+                if int((pd[_].split('-'))[1]) == current_month or int((pd[_].split('-'))[0]) == current_year:
                     current_month_pd.append(pd)
 
         pd_failed = 0
@@ -763,7 +763,7 @@ class Data_analysis:
         for pd in self.data_set:
             for _ in range(9, len(pd)):
                 for i in range(len(last_years_labels)):
-                    if eval((pd[_].split('-'))[0]) == last_years_labels[i]:
+                    if int((pd[_].split('-'))[0]) == last_years_labels[i]:
                         last_years_values[i] += 1
                         break
 
@@ -796,9 +796,9 @@ class Data_analysis:
         for pd in self.data_set:
             for _ in range(9, len(pd)):
                 for i in range(len(last_five_years_labels)):
-                    if eval((pd[_].split('-'))[0]) == eval(last_five_years_labels[i][0]) and (pd[5]) == 'Fail':
+                    if int((pd[_].split('-'))[0]) == int(last_five_years_labels[i][0]) and (pd[5]) == 'Fail':
                         last_five_years_values[i][0] += 1
-                    elif eval((pd[_].split('-'))[0]) == eval(last_five_years_labels[i][0]) and (pd[5]) == 'Pass':
+                    elif int((pd[_].split('-'))[0]) == int(last_five_years_labels[i][0]) and (pd[5]) == 'Pass':
                         last_five_years_values[i][1] += 1
 
         df_records = []
