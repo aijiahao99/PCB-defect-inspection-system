@@ -8,7 +8,7 @@ content = 'This is the result after the PCB inspection. Please analyze the resul
 
 # 初始化OpenAI客户端
 client = OpenAI(
-    # 如果没有配置环境变量，请用阿里云百炼API Key替换：api_key="sk-xxx"
+    # 如果没有配置环境变量，请用阿里云百炼API Key替换：api_key="sk-xxx" 免费使用期限为3个月
     api_key="sk-7b5c9f0fa52a45c6af68c920b1da932c",
     base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
 )
