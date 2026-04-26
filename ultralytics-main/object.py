@@ -3,7 +3,7 @@ import os
 
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QMessageBox, QSizePolicy
-import UI_register,UI_login,sys,UI_feedback,UI_detection,UI_change,UI_add,UI_system,auto_detect, check
+import UI_register,UI_login,sys,UI_feedback,UI_detection,UI_change,UI_add,UI_system,UI_auto_detect, UI_check
 os.environ['QT_AUTO_SCREEN_SCALE_FACTOR'] = '1'
 # 该文件用于实体化所有的窗口对象，方便全局调用
 # 启用高DPI支持
@@ -80,13 +80,13 @@ DETECTION_ADD_DATA_WIN.setupUi(DETECTION_ADD_DATA)
 # 批量处理窗口初始化
 AUTO_DETECTION_QWIDGET = QWidget()
 AUTO_DETECTION_QWIDGET.setFixedSize(780,630)
-AUTO_DETECTION_WIN = auto_detect.Ui_Batch_form()
+AUTO_DETECTION_WIN = UI_auto_detect.Ui_Batch_form()
 AUTO_DETECTION_WIN.setupUi(AUTO_DETECTION_QWIDGET)
 AUTO_DETECTION_QWIDGET.closeEvent = closeEvent
 # 性能监控窗口
 PER_CHECK_QWIDGET = QWidget()
 PER_CHECK_QWIDGET.setFixedSize(620,510)
-PER_CHECK_WIN = check.Ui_performance_check()
+PER_CHECK_WIN = UI_check.Ui_performance_check()
 PER_CHECK_WIN.setupUi(PER_CHECK_QWIDGET)
 
 

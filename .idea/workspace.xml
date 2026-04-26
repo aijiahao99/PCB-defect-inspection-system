@@ -4,23 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="566b6d4f-aa87-4db0-8d57-b3fb2b418e2a" name="更改" comment="注释掉测试代码">
-      <change beforePath="$PROJECT_DIR$/.idea/PCB detection system.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/PCB detection system.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="566b6d4f-aa87-4db0-8d57-b3fb2b418e2a" name="更改" comment="Regular expression for adding underscores to the registration function">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ultralytics-main/add.py" beforeDir="false" afterPath="$PROJECT_DIR$/ultralytics-main/UI_add.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ultralytics-main/auto_detect.py" beforeDir="false" afterPath="$PROJECT_DIR$/ultralytics-main/UI_auto_detect.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ultralytics-main/bd/code.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/ultralytics-main/bd/code.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ultralytics-main/change.py" beforeDir="false" afterPath="$PROJECT_DIR$/ultralytics-main/UI_change.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ultralytics-main/detect.py" beforeDir="false" afterPath="$PROJECT_DIR$/ultralytics-main/detect.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ultralytics-main/detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/ultralytics-main/UI_detection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ultralytics-main/feedback.py" beforeDir="false" afterPath="$PROJECT_DIR$/ultralytics-main/UI_feedback.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ultralytics-main/login.py" beforeDir="false" afterPath="$PROJECT_DIR$/ultralytics-main/UI_login.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ultralytics-main/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/ultralytics-main/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ultralytics-main/check.py" beforeDir="false" afterPath="$PROJECT_DIR$/ultralytics-main/UI_check.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ultralytics-main/data_analysis/user_data_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/ultralytics-main/data_analysis/user_data_1.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ultralytics-main/object.py" beforeDir="false" afterPath="$PROJECT_DIR$/ultralytics-main/object.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ultralytics-main/register.py" beforeDir="false" afterPath="$PROJECT_DIR$/ultralytics-main/UI_register.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ultralytics-main/sys_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/ultralytics-main/sys_function.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ultralytics-main/system.py" beforeDir="false" afterPath="$PROJECT_DIR$/ultralytics-main/UI_system.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ultralytics-main/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/ultralytics-main/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -228,7 +218,31 @@
       <option name="project" value="LOCAL" />
       <updated>1771323762501</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="renamed all ui files、added performance check function、fixed some bugs">
+      <option name="closed" value="true" />
+      <created>1777204472932</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1777204472932</updated>
+    </task>
+    <task id="LOCAL-00006" summary="renamed all ui files、added performance check function、fixed some bugs">
+      <option name="closed" value="true" />
+      <created>1777204561663</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1777204561663</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Regular expression for adding underscores to the registration function">
+      <option name="closed" value="true" />
+      <created>1777204864958</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1777204864958</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -276,7 +290,9 @@
     <MESSAGE value="deleted unused files and dir from yolo" />
     <MESSAGE value="correcting interface language" />
     <MESSAGE value="注释掉测试代码" />
-    <option name="LAST_COMMIT_MESSAGE" value="注释掉测试代码" />
+    <MESSAGE value="renamed all ui files、added performance check function、fixed some bugs" />
+    <MESSAGE value="Regular expression for adding underscores to the registration function" />
+    <option name="LAST_COMMIT_MESSAGE" value="Regular expression for adding underscores to the registration function" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PCB_detection_system$main.coverage" NAME="main 覆盖结果" MODIFIED="1767744151733" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ultralytics-main" />
