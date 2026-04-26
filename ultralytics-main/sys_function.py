@@ -101,8 +101,7 @@ class Sys_infor:
         object.SYSTEM_INFOR_WIN.plainTextEdit.setPlainText("*** Current system version number - English v4.0\n"
                                                            f"** The current number of system files - {self.files_count}\n"
                                                            f"** System developer - Jiahao Ai\n"
-                                                           f"** Department - Information Technology and Robotics\n"
-                                                           f"** System architecture - Single-core hybrid architecture\n"
+                                                           f"** Department - Information systems and technologies\n"
                                                            f"** System version - Development")
     # 获取当前路径
     def get_current_path(self):
