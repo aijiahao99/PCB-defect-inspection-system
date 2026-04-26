@@ -1,10 +1,10 @@
+import torch
 import ast
 import os.path
 import shutil
-import time
 
 import imagehash
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as Img, Table
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as Img
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import cm
 from reportlab.lib import colors
@@ -13,7 +13,6 @@ from PIL import Image
 
 import sql
 import cv2
-import torch  # 新增：GPU验证/强制调用必须的包
 from ultralytics import YOLO
 # 模型预测调用文件
 # 包含结果数据处理
@@ -31,22 +30,8 @@ class model_predict:
         self.imgs_type = None
         # 被识别图片所在文件
         self.imgs_fold_address = "detect_imgs/"
-        # 加载模型
+        # 加载
         self.model = YOLO(self.best_weights)
-        # ====================== 新增：GPU强制调用+初始化验证 ======================
-        # 强制将模型推到GPU（cuda:0），无GPU则自动切CPU，兼容兜底
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        self.model = self.model.to(self.device)
-        # 启动时打印GPU初始化信息，确认模型设备
-        print("="*60)
-        print(f"【模型初始化-GPU验证】当前运行设备：{self.device}")
-        if torch.cuda.is_available():
-            print(f"【模型初始化-GPU验证】显卡名称：{torch.cuda.get_device_name(0)}")
-            print(f"【模型初始化-GPU验证】GPU显存可用：{torch.cuda.get_device_properties(0).total_memory/1024**3:.2f}GB")
-        else:
-            print(f"【模型初始化-GPU验证】无NVIDIA GPU，使用CPU检测")
-        print("="*60)
-        # ==========================================================================
         # 边框位置
         self.location = []
         # 缺陷数量
@@ -510,6 +495,7 @@ class model_predict:
 
     #实时检测模块
     def real_time_detect(self):
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
         cap = cv2.VideoCapture(0)
         # 设置编码格式
         video_format = cv2.VideoWriter_fourcc(*'mp4v')
@@ -517,11 +503,8 @@ class model_predict:
         out = cv2.VideoWriter('output.mp4',video_format,20.0,(int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
         skip_frames = 5
         frame_count = 0
-        model = YOLO(self.best_weights)
-        # ====================== 新增：实时检测模型强制GPU ======================
-        model = model.to(self.device)  # 和初始化的模型用同一设备（GPU/CPU）
-        print(f"【实时检测-GPU验证】实时检测模型已推到：{self.device}")
-        # ======================================================================
+        model = YOLO(self.best_weights).to(device=device)
+        print(f"current device: {device}")
         while cap.isOpened():
             success, frame = cap.read()
             if not success:
@@ -529,30 +512,35 @@ class model_predict:
             frame_count += 1
             if frame_count % skip_frames != 0:
                 continue
-
             # 缩小图像以加快推理速度
             scale_percent = 80
             width = int(frame.shape[1] * scale_percent / 100)
             height = int(frame.shape[0] * scale_percent / 100)
             resized_frame = cv2.resize(frame, (width, height))
-
             # 模型推理
             results = model(resized_frame)
-
             # 绘制检测结果
             annotated_frame = results[0].plot()
-
             # 显示结果
             cv2.imshow("PCB real time detector", annotated_frame)
             # 写入文件
             out.write(frame)
-
                 # 按下 'e' 键退出
             if cv2.waitKey(1) & 0xFF == ord('e'):
                 break
 
         cap.release()
         cv2.destroyAllWindows()
+
+    # 数据导入文件中
+    def record_speed(self, pp, infer, post):
+        try:
+            filepath = "C:/Users/Bao/Desktop/tmp.txt"
+            with open(filepath, 'a', encoding='utf-8') as file:  # 使用 'a' 追加模式
+                file.write(f"{pp:.1f}ms,{infer:.1f}ms,{post:.1f}ms\n")
+            print(f"recorded success: {filepath}")
+        except Exception as e:
+            print(f"recorded fail: {e}")
 
     # 批量检测
     def batch_run_model(self):
@@ -571,14 +559,11 @@ class model_predict:
         if self.if_imgs_address_valid():
             # 删除文件夹 （测试使用）
             # self.remove_dir()
-            # ====================== 新增：批量检测-GPU验证日志 ======================
-            print(f"\n【批量图片检测-GPU验证】本次检测设备：{self.device}")
-            if torch.cuda.is_available():
-                print(f"【批量图片检测-GPU验证】当前GPU显存占用：{torch.cuda.memory_allocated(0)/1024**3:.2f}GB/{torch.cuda.get_device_properties(0).total_memory/1024**3:.2f}GB")
-            # ======================================================================
             # 识别后保存文件 在 .. runs/detect/ 下面
+            device = 'cuda' if torch.cuda.is_available() else 'cpu'
             result_output = self.model.predict(self.imgs_address, project=self.result_save_address, save=True, save_conf=True,
-                                               save_txt=True, name=self.save_filename)
+                                               save_txt=True, name=self.save_filename,device = device)
+            print(f"current device: {device}")
             if len(self.result) > 0:
                 self.result.clear()
 
@@ -590,6 +575,20 @@ class model_predict:
                 for box in boxes:
                     id = int(box.cls)
                     self.result.append(all_names[id])
+
+            # 测试代码
+            # 记录数据
+            if isinstance(result_output, list) and len(result_output) > 0:
+                for result in result_output:
+                    if hasattr(result, 'speed'):
+                        speed = result.speed
+                        if isinstance(speed, dict):
+                            preprocess = speed.get('preprocess', 0)
+                            inference = speed.get('inference', 0)
+                            postprocess = speed.get('postprocess', 0)
+                            self.record_speed(preprocess, inference, postprocess)
+                            break
+
 
             print(self.result)
             self.spilt_imgs_infor()
@@ -649,13 +648,10 @@ class model_predict:
             if self.if_imgs_address_valid():
                 # 删除文件夹 （测试使用）
                 #self.remove_dir()
-                # ====================== 新增：单张检测-GPU验证日志 ======================
-                print(f"\n【单张图片检测-GPU验证】本次检测设备：{self.device}")
-                if torch.cuda.is_available():
-                    print(f"【单张图片检测-GPU验证】当前GPU显存占用：{torch.cuda.memory_allocated(0)/1024**3:.2f}GB/{torch.cuda.get_device_properties(0).total_memory/1024**3:.2f}GB")
-                # ======================================================================
                 # 识别后保存文件 在 .. runs/detect/ 下面
-                result_output = self.model.predict(self.imgs_address, project=self.result_save_address ,save=True, save_conf=True, save_txt=True, name=self.save_filename)
+                device = 'cuda' if torch.cuda.is_available() else 'cpu'
+                result_output = self.model.predict(self.imgs_address, project=self.result_save_address ,save=True, save_conf=True, save_txt=True, name=self.save_filename,device=device)
+                print(f"current device: {device}")
                 if len(self.result) > 0:
                     self.result.clear()
                 # 获取模型内所有的标签名称
@@ -697,3 +693,4 @@ class model_predict:
                     self.init.pcb_register(self.data[12][1],self.imgs_name, self.imgs_address,output_address, self.qualified, str(data_count), self.imgs_type, str(data_reason))
                 return output_address
             return "None"
+

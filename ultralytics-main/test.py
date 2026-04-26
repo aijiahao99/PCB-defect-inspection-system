@@ -1,17 +1,27 @@
-import unittest, sql, detect
+import unittest
+import sql
 
 # 该文件用于进行系统功能的自动化测试
 # 状态 - 未完成
 # * 运行前修改测试参数
+# C:\Users\Bao\Desktop\PythonProject3\ultralytics-main\sql.py
+# C:\Users\Bao\Desktop\PythonProject3\ultralytics-main\test.py
+# 数据库模块测试
+class Database_test(unittest.TestCase):
 
-class project_test(unittest.TestCase):
+    def __init__instance(self):
+
+        self.case = sql.Sql_connect()
+        return True
+
     # 测试数据库是否连接成功
     def test_sqlconnect(self):
         self.case = sql.Sql_connect()
 
+
+
     # 测试正则表达式函数模块
     def test_register_valid(self):
-        self.case = sql.Sql_connect()
         # 成功测试
         self.assertTrue(self.case.if_register_valid("root","Test@123","example123@gmail.com"))
         # 失败测试
@@ -19,8 +29,6 @@ class project_test(unittest.TestCase):
 
     # 测试数据库操作
     def test_database_operations(self):
-        self.case = sql.Sql_connect()
-
         # 登入成功测试
         self.assertTrue(self.case.user_login("123","root"))
         # 登入失败测试
@@ -42,7 +50,6 @@ class project_test(unittest.TestCase):
 
     # 测试账号信息修改
     def test_user_account_modification(self):
-        self.case = sql.Sql_connect()
         # 测试成功测试
         self.assertTrue(self.case.update_user_password("123","123"))
 

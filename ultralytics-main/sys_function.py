@@ -1,4 +1,6 @@
 import ast
+import ctypes
+from ctypes import wintypes
 import os.path
 import sys
 from datetime import datetime
@@ -16,6 +18,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow,
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 import random
 import string
+import psutil
 from openai import OpenAI
 # 该文件用于初始化和构建系统界面功能函数
 # 登入功能模块
@@ -95,10 +98,10 @@ class Sys_infor:
         self.files_count = 0
         self.count_py_files()
         # 更新系统信息
-        object.SYSTEM_INFOR_WIN.plainTextEdit.setPlainText("*** Current system version number - English v3.0\n"
+        object.SYSTEM_INFOR_WIN.plainTextEdit.setPlainText("*** Current system version number - English v4.0\n"
                                                            f"** The current number of system files - {self.files_count}\n"
                                                            f"** System developer - Jiahao Ai\n"
-                                                           f"** Department - Information Systems and Technologies\n"
+                                                           f"** Department - Institute of Information Technology and Robotics\n"
                                                            f"** System architecture - Single-core hybrid architecture\n"
                                                            f"** System version - Development")
     # 获取当前路径
@@ -337,6 +340,7 @@ class Detect_mainwindow:
         object.DETECTION_WIN.clean_but.clicked.connect(self.action_clean_chat)
         object.DETECTION_WIN.back_but.clicked.connect(self.action_back_index1)
         object.DETECTION_WIN.reevaluation_but.clicked.connect(self.action_evaluation)
+        object.DETECTION_WIN.System_check.clicked.connect(self.action_sys_check)
         object.DETECTION_WIN.user_textline.setPlaceholderText("Send the question you want to consult to the AI...")
         object.DETECTION_WIN.model_type.addItems(['deepseek-v3.2','qwen-flash-2025-07-28','qwen-plus','qwen-turbo'])
         object.DETECTION_WIN.model_box.addItems(['deepseek-v3.2','qwen-flash-2025-07-28','qwen-plus','qwen-turbo'])
@@ -358,6 +362,12 @@ class Detect_mainwindow:
                                                                     }""")
         object.DETECTION_WIN.table_data.clicked.connect(self.action_cell_changed)
         object.DETECTION_WIN.model_type.currentIndexChanged.connect(self.action_update_api)
+
+
+    # 监控窗口展示
+    def action_sys_check(self):
+        object.PER_CHECK_QWIDGET.show()
+        object.DETECTION_QWIDGET.hide()
 
     # 切换账号
     def action_switch_account(self):
@@ -999,6 +1009,180 @@ class Detect_mainwindow:
                 object.DETECTION_WIN.toolBox.setCurrentIndex(1)
                 object.DETECTION_WIN.download_report.setEnabled(True)
                 object.DETECTION_WIN.assessment_but.setEnabled(True)
+
+class MEMORY_BASIC_INFORMATION(ctypes.Structure):
+    _fields_ = [ ("BaseAddress", ctypes.c_void_p),
+                 ("AllocationBase", ctypes.c_void_p),
+                 ("AllocationProtect", wintypes.DWORD),
+                 ("RegionSize", ctypes.c_size_t),
+                 ("State", wintypes.DWORD),
+                 ("Protect", wintypes.DWORD),
+                 ("Type", wintypes.DWORD), ]
+
+class PSAPI_WORKING_SET_EX_BLOCK(ctypes.Structure):
+    _fields_ = [ ("Flags", ctypes.c_ulonglong) ]
+class PSAPI_WORKING_SET_EX_INFORMATION(ctypes.Structure):
+    _fields_ = [ ("VirtualAddress", ctypes.c_void_p),
+                 ("VirtualAttributes", PSAPI_WORKING_SET_EX_BLOCK) ]
+
+class PROCESS_MEMORY_COUNTERS_EX(ctypes.Structure):
+    _fields_ = [
+        ('cb', wintypes.DWORD),
+        ('PageFaultCount', wintypes.DWORD),
+        ('PeakWorkingSetSize', ctypes.c_size_t),
+        ('WorkingSetSize', ctypes.c_size_t),
+        ('QuotaPeakPagedPoolUsage', ctypes.c_size_t),
+        ('QuotaPagedPoolUsage', ctypes.c_size_t),
+        ('QuotaPeakNonPagedPoolUsage', ctypes.c_size_t),
+        ('QuotaNonPagedPoolUsage', ctypes.c_size_t),
+        ('PagefileUsage', ctypes.c_size_t),
+        ('PeakPagefileUsage', ctypes.c_size_t),
+        ('PrivateUsage', ctypes.c_size_t)
+    ]
+PAGE_SIZE = 4096
+
+class Sys_check:
+    def __init__(self):
+        self.psapi = ctypes.WinDLL('psapi.dll')
+        self.kernel32 = ctypes.WinDLL('kernel32.dll')
+
+        self.VirtualQueryEx = self.kernel32.VirtualQueryEx
+        self.VirtualQueryEx.restype = ctypes.c_size_t
+        self.VirtualQueryEx.argtypes = [wintypes.HANDLE, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_size_t]
+
+        self.QueryWorkingSetEx = self.psapi.QueryWorkingSetEx
+        self.QueryWorkingSetEx.restype = wintypes.BOOL
+        self.QueryWorkingSetEx.argtypes = [wintypes.HANDLE, ctypes.c_void_p, ctypes.c_size_t]
+
+        self.GetCurrentProcess = self.kernel32.GetCurrentProcess
+        self.GetCurrentProcess.restype = wintypes.HANDLE
+
+        object.PER_CHECK_WIN.return_but.clicked.connect(self.action_back_home)
+        object.PER_CHECK_WIN.start_but.clicked.connect(self.action_start_check)
+
+        self.PROCESS_MEMORY_COUNTERS_EX = PROCESS_MEMORY_COUNTERS_EX
+        self.GetProcessMemoryInfo = self.psapi.GetProcessMemoryInfo
+        self.GetProcessMemoryInfo.argtypes = [
+                wintypes.HANDLE,
+                ctypes.POINTER(PROCESS_MEMORY_COUNTERS_EX),
+                wintypes.DWORD
+            ]
+
+        self.GetProcessMemoryInfo.restype = wintypes.BOOL
+
+        self.GetCurrentProcess = self.kernel32.GetCurrentProcess
+        self.GetCurrentProcess.restype = wintypes.HANDLE
+
+    def action_reset(self):
+        object.PER_CHECK_WIN.win_ram_num.clear()
+        object.PER_CHECK_WIN.cpu_num.clear()
+        object.PER_CHECK_WIN.ram_num.clear()
+        object.PER_CHECK_WIN.fps_num.clear()
+        object.PER_CHECK_WIN.fds_num.clear()
+        object.PER_CHECK_WIN.sp_ram_num.clear()
+        object.PER_CHECK_WIN.sub_ram_num.clear()
+        object.PER_CHECK_WIN.thread_num.clear()
+
+    def action_back_home(self):
+        if hasattr(self, "timer"):
+            self.timer.stop()
+        if hasattr(self, "fps_timer"):
+            self.fps_timer.stop()
+
+        self.action_reset()
+        object.PER_CHECK_QWIDGET.close()
+        object.DETECTION_QWIDGET.show()
+
+    def get_private_working_set(self):
+        process = self.GetCurrentProcess()
+        mbi = MEMORY_BASIC_INFORMATION()
+        address = 0
+        private_pages = 0
+        MAX_ADDRESS = 0x7FFFFFFFFFFF
+        while address < MAX_ADDRESS:
+            result = self.VirtualQueryEx( process, ctypes.c_void_p(address), ctypes.byref(mbi), ctypes.sizeof(mbi) )
+            if result == 0:
+                break
+            if mbi.RegionSize == 0:
+                address += PAGE_SIZE
+                continue
+            region_end = address + mbi.RegionSize
+            if mbi.State == 0x1000:
+                page_count = mbi.RegionSize // PAGE_SIZE
+                ws_info_array = (PSAPI_WORKING_SET_EX_INFORMATION * page_count)()
+                for i in range(page_count):
+                    ws_info_array[i].VirtualAddress = ctypes.c_void_p(address + i * PAGE_SIZE)
+                if self.QueryWorkingSetEx(process, ws_info_array, ctypes.sizeof(ws_info_array)):
+                    for i in range(page_count):
+                        flags = ws_info_array[i].VirtualAttributes.Flags
+                        valid = flags & 0x1
+                        shared = flags & 0x2
+                        if valid and not shared:
+                            private_pages += 1
+            address = region_end
+            if address > MAX_ADDRESS:
+                break
+        return private_pages * PAGE_SIZE / 1024 / 1024
+
+    def setup_monitor(self):
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_metrics)
+        self.timer.start(1000)
+
+        self.frame_count = 0
+        self.fps_timer = QTimer()
+        self.fps_timer.timeout.connect(self.calculate_fps)
+        self.fps_timer.start(1000)
+
+    def get_task_manager_metrics(self):
+        """获取与Task Manager完全一致的内存指标"""
+        try:
+            process = self.GetCurrentProcess()
+            counters = self.PROCESS_MEMORY_COUNTERS_EX()
+            counters.cb = ctypes.sizeof(counters)
+
+            if self.GetProcessMemoryInfo(process, ctypes.byref(counters), counters.cb):
+                return {
+                    'working_set': counters.WorkingSetSize / 1024 / 1024,  # MB
+                    'private_usage': counters.PrivateUsage / 1024 / 1024,  # MB (专用工作集)
+                    'pagefile': counters.PagefileUsage / 1024 / 1024  # MB (提交大小)
+                }
+        except Exception as e:
+            print(f"Windows API error: {e}")
+
+        return None
+
+    def update_metrics(self):
+        process = psutil.Process()
+        threads = process.num_threads()
+        cpu = process.cpu_percent()
+
+        metrics = self.get_task_manager_metrics()
+        if metrics:
+            object.PER_CHECK_WIN.sub_ram_num.setText(f"{metrics['pagefile']:.1f} MB")
+            object.PER_CHECK_WIN.sp_ram_num.setText(f"{metrics['private_usage']:.1f} MB")
+
+        memory_psh = process.memory_info().rss / 1024 / 1024
+        fdss = process.num_fds() if hasattr(process, 'num_fds') else 'N/A'
+        object.PER_CHECK_WIN.cpu_num.setText(f"{cpu}%")
+        object.PER_CHECK_WIN.ram_num.setText(f"{memory_psh:.1f} MB")
+
+        object.PER_CHECK_WIN.thread_num.setText(f"{threads}")
+        object.PER_CHECK_WIN.fds_num.setText(f"{fdss}")
+
+        tm_memory = self.get_private_working_set()
+        object.PER_CHECK_WIN.win_ram_num.setText(f"{tm_memory:.1f} MB")
+
+    def calculate_fps(self):
+        fps = self.frame_count
+        self.frame_count = 0
+        object.PER_CHECK_WIN.fps_num.setText(f"{fps}")
+
+    def increment_frame(self):
+        self.frame_count += 1
+
+    def action_start_check(self):
+        self.setup_monitor()
 
 class Add_data:
     def __init__(self):
